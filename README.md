@@ -509,10 +509,9 @@ if (STANDARDIZE) {
 print(p)
 ggsave("GRS4_minus_ref_contrasts.png", p, width = 8, height = 4.5, dpi = 300)
 ```
+<img width="1342" height="735" alt="image" src="https://github.com/user-attachments/assets/ff82bb18-1b1c-4877-b79c-10fb4c31032f" />
 
-<img width="802" height="440" alt="image" src="https://github.com/user-attachments/assets/cf0be775-e32d-42e1-a118-3fed211c0229" />
-
-<img width="802" height="440" alt="image" src="https://github.com/user-attachments/assets/eb5cbcda-b971-458c-864a-6a98d306d561" />
+<img width="845" height="300" alt="image" src="https://github.com/user-attachments/assets/477b68fc-0611-43e5-82d5-8dbf9bb184e8" />
 
 -Positive estimates indicate higher predicted BMI for the highest genetic-risk group (GRS4) compared with the reference group. In this example the estimated gap increases monotonically across time periods (≈ 7.8 → 24.0 BMI units).
 - Standardized effects (estimate / residual SD) and percent-of-mean give alternative scales for magnitude; here the effects are very large because this is a simulated dataset with strong, time-increasing genetic effects.
