@@ -294,8 +294,6 @@ Walkthrough:
   6. Create descriptive GRS labels
   7. Final plot: color = age_group, linetype = GRS_group
 
-
-
 3. Predicted BMI trajectories across Age by Birth Cohort (population-level, averaged over GRS)
 
 -Build a dense age grid (20–80).
@@ -413,3 +411,110 @@ Interpretation
 Each curve shows the model-predicted average BMI across age for one yearcat.
 Ribbons show the approximate 95% confidence interval around the fixed-effect prediction (averaged over GRS).
 This plot highlights how age trajectories differ by survey period / birth cohort while integrating over genetic risk.
+
+4. Contrast table and plot — GRS4 vs ref
+
+- Compute the model-predicted difference in BMI between the highest genetic-risk group (GRS4) and the reference group (ref) separately for each survey time period (`yearcat`).
+- Produce a table of contrast results and a plot showing point estimates ± 95% CIs across time.
+
+Table code attached as separate file. Below is example code for the plot (needs amelioration):
+```r
+# --- Compute contrasts and export CSV ---
+library(emmeans)
+library(dplyr)
+
+# Turn off tests that require pbkrtest/lmerTest; still gives p-values for contrasts
+emm_options(disable.tests = FALSE, lmerTest.limit = Inf)
+
+emm_grs <- emmeans(model, specs = ~ GRS | yearcat, re.form = NA)
+
+contrast_results <- contrast(
+  emm_grs,
+  method = list("GRS4 - ref" = c(-1, 0, 0, 0, 1)),
+  by = "yearcat",
+  adjust = "none"
+)
+
+results_table <- summary(contrast_results, infer = c(TRUE, TRUE), level = 0.95)
+print(results_table)
+
+table_clean <- as.data.frame(results_table)
+
+# Robustly select CI column names present and rename to LCL/UCL if needed
+lower_candidates <- c("lower.CL", "asymp.LCL")
+upper_candidates <- c("upper.CL", "asymp.UCL")
+lower_name <- intersect(lower_candidates, names(table_clean))[1]
+upper_name <- intersect(upper_candidates, names(table_clean))[1]
+
+wanted <- c("yearcat", "estimate", "SE", "df")
+wanted <- intersect(c(wanted, lower_name, upper_name, "p.value"), names(table_clean))
+table_clean <- table_clean[, wanted, drop = FALSE]
+
+if (!is.null(lower_name)) names(table_clean)[names(table_clean) == lower_name] <- "LCL"
+if (!is.null(upper_name)) names(table_clean)[names(table_clean) == upper_name] <- "UCL"
+
+write.csv(table_clean, "GRS_difference_table.csv", row.names = FALSE)
+```
+
+```r
+# --- Plot contrasts (GRS4 - ref) with 95% CI ---
+# Save this block or run directly after creating `table_clean`
+library(ggplot2)
+library(dplyr)
+
+stopifnot(all(c("yearcat", "estimate", "LCL", "UCL") %in% names(table_clean)))
+
+table_clean <- table_clean %>%
+  mutate(
+    yearcat = factor(yearcat, levels = unique(yearcat)),
+    estimate = as.numeric(estimate),
+    LCL = as.numeric(LCL),
+    UCL = as.numeric(UCL),
+    p.value = if ("p.value" %in% names(.)) as.numeric(p.value) else NA_real_
+  )
+
+# Optional standardization by residual SD
+STANDARDIZE <- TRUE
+if (STANDARDIZE && exists("model")) {
+  resid_sd <- sigma(model)
+  table_clean <- table_clean %>% mutate(std_effect = estimate / resid_sd)
+} else STANDARDIZE <- FALSE
+
+table_clean <- table_clean %>%
+  mutate(sig = case_when(
+    !is.na(p.value) & p.value < 0.001 ~ "***",
+    !is.na(p.value) & p.value < 0.01  ~ "**",
+    !is.na(p.value) & p.value < 0.05  ~ "*",
+    TRUE ~ ""
+  ))
+
+p <- ggplot(table_clean, aes(x = yearcat, y = estimate)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_errorbar(aes(ymin = LCL, ymax = UCL), width = 0.12, color = "black", alpha = 0.8) +
+  geom_point(size = 3, color = "#2b8cbe") +
+  geom_text(aes(label = sig), vjust = -1.2, size = 5, color = "black") +
+  labs(
+    title = "Contrast: Predicted BMI difference (GRS4 − ref) by time period",
+    x = "Time period (year category)",
+    y = "Estimated BMI difference (GRS4 − ref)",
+    caption = "Points = estimates; bars = 95% CI. Dashed line = 0"
+  ) +
+  theme_minimal(base_size = 13)
+
+if (STANDARDIZE) {
+  p <- p + geom_text(aes(label = sprintf("std=%.2f", std_effect)), vjust = 1.6, size = 3.5, color = "darkgray") +
+    labs(subtitle = "Gray labels show standardized effect (estimate / residual SD)")
+}
+
+print(p)
+ggsave("GRS4_minus_ref_contrasts.png", p, width = 8, height = 4.5, dpi = 300)
+```
+
+<img width="802" height="440" alt="image" src="https://github.com/user-attachments/assets/cf0be775-e32d-42e1-a118-3fed211c0229" />
+
+<img width="802" height="440" alt="image" src="https://github.com/user-attachments/assets/eb5cbcda-b971-458c-864a-6a98d306d561" />
+
+-Positive estimates indicate higher predicted BMI for the highest genetic-risk group (GRS4) compared with the reference group. In this example the estimated gap increases monotonically across time periods (≈ 7.8 → 24.0 BMI units).
+- Standardized effects (estimate / residual SD) and percent-of-mean give alternative scales for magnitude; here the effects are very large because this is a simulated dataset with strong, time-increasing genetic effects.
+- All contrasts are highly statistically significant (very small p-values). Because this is simulated data, statistical significance mainly reflects the simulated parameter sizes and sample size.
+
