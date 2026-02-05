@@ -90,21 +90,6 @@ model <- lmer(..., data = df, REML = FALSE)
 - Spline coefficients (`as1..as7`) together define the age–BMI relationship; interpreting single spline coefficients in isolation is not intuitive — visualize predicted curves instead.
 - Random-effect variance components indicate between-subject variability in intercepts and age slopes.
 
-## Recommended diagnostics and checks
-
-- Check model convergence and warnings printed by `lmer()`. If convergence warnings occur, consider:
-  - simplifying random-effects structure,
-  - rescaling predictors (e.g., center age),
-  - refitting using different optimizers (e.g., `control = lmerControl(optimizer = "bobyqa")`).
-- Residual diagnostics:
-  - plot residuals vs fitted,
-  - check QQ-plot of residuals,
-  - check heteroscedasticity across `age`, `yearcat`, and `GRS`.
-- Random effects:
-  - plot subject-specific fitted lines or random intercepts/slopes.
-- Multicollinearity:
-  - when using many spline bases and interactions, check correlations/VIF-like diagnostics for fixed effects (VIF is less well-defined with lmer; consider inspecting the fixed-effects design matrix).
-
 ## Visualizations
 
 1. Predicted BMI by time point
@@ -286,7 +271,6 @@ ggplot(emm_df, aes(x = yearcat, y = emmean, color = GRS_group, group = GRS_group
   theme_minimal(base_size = 13) +
   theme(legend.position = "top")
 ```
-Interpretation of the plotted results
 
 <img width="652" height="456" alt="image" src="https://github.com/user-attachments/assets/ca951f9f-cd49-4e8e-9b49-2430cb4c1603" />
 
@@ -295,7 +279,7 @@ Error bars represent the confidence interval for the predicted mean.
 
 - This code extends the single-age visualization to compare predicted BMI across multiple representative ages (age groups). For each age-group midpoint it computes the spline basis (so predictions match the model input), requests marginal model-predictions (emmeans with re.form = NA) for two GRS levels across all year categories, combines results, and plots predicted BMI with CI. The final plot uses color for age groups and linetype for the two GRS groups so you can simultaneously compare (1) how predictions change across time, (2) how they differ by GRS, and (3) how those differences vary by age.
 
-Step-by-step walkthrough 
+Walkthrough:
   1. Define age groups and representative ages
      - CreateS 4 age bins (25–35, 35–50, 50–65, 65–80) and computeS an age_ref for each as the midpoint. These midpoints serve as representative ages for predictions.
   2. Generate spline values for each age reference
@@ -309,6 +293,8 @@ Step-by-step walkthrough
      - emmeans output can name CI columns differently depending on package versions (lower.CL vs asymp.LCL).
   6. Create descriptive GRS labels
   7. Final plot: color = age_group, linetype = GRS_group
+
+
 
 3. Predicted BMI trajectories across Age by Birth Cohort (population-level, averaged over GRS)
 
