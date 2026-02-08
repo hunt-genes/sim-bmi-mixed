@@ -12,9 +12,7 @@ This repository contains R code to simulate a longitudinal dataset and fit a mix
 - A linear mixed model (lmer) is fit with random intercepts and random slopes for age (grouped by `id`) plus multiple interaction terms between splines, year categories, and GRS.
 
 ## Files
-
-- `simulate_and_fit.R` — creates the simulated longitudinal dataset and fits the mixed-effects model.
-- `README.md` — this file.
+Attached all R scripts
 
 ## Requirements
 
@@ -37,11 +35,8 @@ library(lspline)
 
 ## How to run
 
-1. Save the provided R code into a file, e.g. `simulate_and_fit.R`.
+1. Save the provided R code into a file
 2. Open R or RStudio and run:
-```r
-source("simulate_and_fit.R")
-```
 3. The script will:
    - create a simulated dataset `df` with columns described below,
    - fit a mixed-effects model with `lmer()`,
