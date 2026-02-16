@@ -1,5 +1,4 @@
 ## ---- Predicted BMI by time point using emmeans ----
-## Run after your model is fitted
 
 # Packages
 library(emmeans)
@@ -9,7 +8,7 @@ library(lspline)
 # 1) Representative age and matching spline values
 age_ref <- median(df$age)
 
-# IMPORTANT: use the same knots you used when building df
+# IMPORTANT: use the same knots I used when building df
 spline_knots <- c(20, 30, 40, 50, 60, 70)
 
 Xref <- lspline(age_ref, knots = spline_knots)
@@ -34,7 +33,7 @@ emm <- emmeans(
 # Ensure CI columns are included
 emm_df <- as.data.frame(summary(emm, infer = c(TRUE, TRUE)))
 
-# Label groups nicely
+# Label groups 
 emm_df$GRS_group <- factor(
   ifelse(emm_df$GRS == "GRS4",
          "Top fifth (most susceptible)",
