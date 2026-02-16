@@ -105,7 +105,7 @@ Key points about the code
 How to use 
 ```r
 ## ---- Predicted BMI by time point using emmeans ----
-## Run after your model is fitted
+## Run after model is fitted
 
 # Packages
 library(emmeans)
@@ -194,7 +194,7 @@ Purpose
 How to use 
 ```r
 ## ---- Predicted BMI by time point using emmeans ----
-## Run after your model is fitted
+## Run after model is fitted
 
 # Packages
 library(emmeans)
