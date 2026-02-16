@@ -30,7 +30,7 @@ age_groups$splines <- lapply(age_groups$age_ref, function(a) {
 # ---------------------------------------------------------
 grs_levels <- c("ref", "GRS4")
 
-# Turn off hypothesis tests (we only want predictions)
+# Turn off hypothesis tests 
 emm_options(disable.tests = TRUE, lmerTest.limit = Inf)
 
 # ---------------------------------------------------------
@@ -58,7 +58,7 @@ for (i in seq_len(nrow(age_groups))) {
 emm_df <- bind_rows(emm_list)
 
 # ---------------------------------------------------------
-# 5. Standardize CI column names (asymp.LCL vs lower.CL)
+# 5. Standardize CI column names 
 # ---------------------------------------------------------
 if ("lower.CL" %in% names(emm_df)) {
   emm_df$LCL <- emm_df$lower.CL
@@ -82,7 +82,7 @@ emm_df$GRS_group <- factor(
 )
 
 # ---------------------------------------------------------
-# 7. Final plot: one panel, colors = age groups, linetype = GRS
+# 7. Final plot
 # ---------------------------------------------------------
 ggplot(
   emm_df,
