@@ -1,4 +1,4 @@
-# Creates a longitudinal dummy data set
+# Create a longitudinal dummy data set
 rm(list = ls())
 
 # Packages
@@ -147,7 +147,7 @@ BMI <- BMI + rnorm(nrow(df), 0, 0.5)
 
 df$BMI <- BMI
 
-# Fit your model
+# Fit model
 model <- lmer(
   BMI ~ yearcat + GRS +
     as1 + as2 + as3 + as4 + as5 + as6 + as7 +
