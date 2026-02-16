@@ -1,7 +1,7 @@
 # sim-bmi-mixed
 Simulation of BMI by time with repeated measures in a mixed model
 
-This repository contains R code to simulate a longitudinal dataset and fit a mixed-effects model for BMI using age splines, categorical survey-year periods, and a categorical genetic risk score (GRS). The simulation and model are intended as a reproducible example for exploring time-varying genetic effects and age trajectories in a repeated-measures setting.
+This repository contains R code to simulate a longitudinal dataset and fit a mixed-effects model for BMI using age splines, categorical survey-year periods, and a categorical genetic risk score. The simulation and model are intended as a reproducible example for exploring time-varying genetic effects and age trajectories in a repeated-measures setting.
 
 ## Overview
 
