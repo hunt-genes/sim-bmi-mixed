@@ -15,7 +15,7 @@ pred_grid$yearcat <- factor(pred_grid$yearcat,
 pred_grid$GRS <- factor(pred_grid$GRS,
                         levels = levels(df$GRS))
 
-# Step 2 — Recreate spline variables EXACTLY like training data
+# Step 2 — Recreate spline variables 
 library(lspline)
 
 make_splines <- function(age_vec){
