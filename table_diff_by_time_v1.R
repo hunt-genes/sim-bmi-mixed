@@ -6,7 +6,7 @@ emm_options(disable.tests = FALSE, lmerTest.limit = Inf)
 # ------------------------------------------------------------
 # 1. Compute marginal means for each yearcat × GRS combination
 #    (Model-fixed effects only, re.form = NA)
-#    Here we average over age and spline terms.
+#    Average over age and spline terms.
 # ------------------------------------------------------------
 emm_grs <- emmeans(
   model,
@@ -16,7 +16,7 @@ emm_grs <- emmeans(
 
 # ------------------------------------------------------------
 # 2. Compute contrasts: GRS4 - ref
-#    This gives the difference at each time period
+#    Gives the difference at each time period
 # ------------------------------------------------------------
 contrast_results <- contrast(
   emm_grs,
@@ -34,7 +34,7 @@ results_table <- summary(
   level = 0.95
 )
 
-# Print nicely
+# Print 
 print(results_table)
 
 # Tibble for export
