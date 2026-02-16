@@ -4,7 +4,7 @@ rm(list = ls())
 # Packages
 library(lme4)
 #library(splines)
-install.packages("lspline")   # once
+#install.packages("lspline")  
 library(lspline)
 
 set.seed(1234)
@@ -58,7 +58,7 @@ u1 <- rnorm(n_id, 0, 0.15)  # random slope SD
 df$u0 <- u0[df$id]
 df$u1 <- u1[df$id]
 
-# Fixed-effect coefficients (arbitrary but realistic)
+# Fixed-effect coefficients
 beta0 <- 23
 
 beta_year <- c(0, 1.0, 1.5, 2.0, 2.5)
@@ -119,7 +119,7 @@ beta_spline_year <- matrix(runif(7*4, -0.3, 0.3),
 # Construct BMI
 BMI <- beta0
 
-# year main effects (keep small)
+# year main effects
 beta_year <- c(
   "66_69" = 0,
   "84_86" = 0.5,
@@ -130,7 +130,7 @@ beta_year <- c(
 
 BMI <- BMI + beta_year[df$yearcat]
 
-# age splines (keep moderate)
+# age splines
 for (k in 1:7) {
   BMI <- BMI + 0.2 * df[[paste0("as", k)]]
 }
@@ -139,10 +139,10 @@ for (k in 1:7) {
 genetic_effect <- beta_grs[df$GRS] * year_multiplier[df$yearcat]
 BMI <- BMI + genetic_effect
 
-# random effects (small)
+# random effects 
 BMI <- BMI + 0.5 * df$u0 + 0.05 * df$u1 * df$age
 
-# noise (small)
+# noise 
 BMI <- BMI + rnorm(nrow(df), 0, 0.5)
 
 df$BMI <- BMI
